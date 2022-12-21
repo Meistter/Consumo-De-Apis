@@ -2,11 +2,21 @@ const img = document.getElementById('img1')
 const img2 = document.getElementById('img2')
 const img3 = document.getElementById('img3')
 const error = document.getElementById('error')
+const exito = document.getElementById('exito')
 const btn = document.getElementById('boton')
+const section = document.getElementById('favoritesMichis')
+
+const btn1 = document.getElementById('btn1')
+const btn2 = document.getElementById('btn2')
+const btn3 = document.getElementById('btn3')
+
 
 const API_KEY = 'api_key=live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
 const API = `https://api.thecatapi.com/v1/images/search?limit=3&${API_KEY}` 
 const API_FAV = `https://api.thecatapi.com/v1/favourites?&${API_KEY}`
+const API_DEL = (id) => `https://api.thecatapi.com/v1/favourites/${id}?&${API_KEY}`
+
+function API_D(id){`https://api.thecatapi.com/v1/favourites/${id}&${API_KEY}`}
 
 
 async function changeCat(){
@@ -18,6 +28,10 @@ async function changeCat(){
         img1.src = data[0].url
         img2.src = data[1].url
         img3.src = data[2].url
+        btn1.addEventListener('click', () => agregarFavorito(data[0].id)) //aqui usamos un arrow function para
+        btn2.addEventListener('click', () => agregarFavorito(data[1].id)) // que cuando cargue no se ejecute
+        btn3.addEventListener('click', () => agregarFavorito(data[2].id)) //automaticamente la funcion agregarFavorito, lo que estamos haciendo es meter agregarFavorito dentro de otra funcion, de esta forma no se ejecuta automaticamente
+                                                                          //pero de forma basica lo q hacemos aqui es que en el evento click llama la funcion agregarFavorito y le manda como parametro el ID
     }else {
         error.innerText = "Hubo un error al cargar los Datos" + res.status
     }
@@ -37,12 +51,25 @@ async function loadFavorites(){
     try{
     const res = await fetch(API_FAV)
    
-    
-        if (res.status == 200){       
+    if (res.status == 200){   
         const data = await res.json()
-        const favimg= document.getElementById('favimg')
-        favimg.src = data[0].url
-        console.log(data[0]);
+        section.innerHTML = ""  //esto lo usamos para limpiar el html antes de ciclar para que al llamar a loadFavorites nuevamente mas adelante no se dupliquen datos en el dom
+        data.forEach(gato => {
+            
+            const article = document.createElement('article')
+            const imgx = document.createElement('img')
+            const btnx = document.createElement('button')
+            const btnText = document.createTextNode('Quitar de Favoritos')
+
+            btnx.appendChild(btnText)
+            imgx.src = gato.image.url
+            imgx.height = 150
+            article.append(imgx, btnx)
+            section.appendChild(article)
+
+            btnx.addEventListener('click', () => deleteMichis(gato.id)) 
+        })
+
     }else {
         error.innerHTML = "Hubo un error al cargar los Datos, ERROR " + res.status
     }
@@ -55,7 +82,40 @@ loadFavorites()
 
 
 //SOLICITUD DE TIPO POST
+async function agregarFavorito(id){
+    try{
+        const res = await fetch(API_FAV,{
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({image_id: id})  //esto es necesario porq no sabemos si el backend esta hecho en javascript por lo que lo enviamos en string
+        })
+        if (res.status == 200){
+            exito.innerHTML = "Imagen de Gatito Linda Guardada Exitosamente " + res.status
+            loadFavorites()
+        }else{
+            exito.innerHTML = "Error al guardar " + res.status
+        }
+    }catch (e){
+        console.log(e);
+    }    
+}
 
-async function agregarFavorito(){
+//SOLICITUD DE TIPO DELETE
 
+async function deleteMichis(id){
+    try{
+        const res = await fetch(API_DEL(id),{
+        method: 'DELETE', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({image_id: id})
+        })
+        if (res.status == 200){
+            exito.innerHTML = "Imagen de Gatito Linda Eliminada Exitosamente " + res.status
+            loadFavorites()
+        }else{
+            exito.innerHTML = "Error al Eliminar " + res.status
+        }
+    }catch{
+
+    }
 }
