@@ -5,8 +5,9 @@ const img3 = document.getElementById('img3')
 const btn = document.getElementById('boton')
 
 const API = 'https://api.thecatapi.com/v1/images/search?limit=3&api_key=live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L' 
-const API_KEY = 'api_key=live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
-const API_FAV = 'https://api.thecatapi.com/v1/favourites?'
+//el limit es para que traiga maximo 3 registros
+
+        
 
 async function changeCat(){
     try{
@@ -25,16 +26,4 @@ changeCat()
 btn.addEventListener('click', changeCat)
 
 
-async function loadFavorites(){
-    try{
-    const res = await fetch(API_FAV)
-    const data = await res.json()
-    const favimg= document.getElementById('favimg')
-    favimg.src = data[0].url
-    
-    } catch{
-            console.log('error');
-    }
-    
-}
-loadFavorites()
+
