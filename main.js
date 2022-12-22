@@ -11,13 +11,13 @@ const btn2 = document.getElementById('btn2')
 const btn3 = document.getElementById('btn3')
 
 
-const API_KEY = 'api_key=live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
-const API = `https://api.thecatapi.com/v1/images/search?limit=3&${API_KEY}` 
-const API_FAV = `https://api.thecatapi.com/v1/favourites?&${API_KEY}`
-const API_DEL = (id) => `https://api.thecatapi.com/v1/favourites/${id}?&${API_KEY}`
+const API_KEY = 'live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
+const API = `https://api.thecatapi.com/v1/images/search?limit=3` 
+const API_FAV = `https://api.thecatapi.com/v1/favourites?` //Aqui ya no llamo la ${API_KEY} por que la pondre en el header
+const API_DEL = (id) => `https://api.thecatapi.com/v1/favourites/${id}?&api_key=${API_KEY}`//aqui ya no es necesario pasar el API_KEY por que lo envío en el header
+function API_D(id){`https://api.thecatapi.com/v1/favourites/${id}&api_key=${API_KEY}`} //igual a lo de arriba
 
-function API_D(id){`https://api.thecatapi.com/v1/favourites/${id}&${API_KEY}`}
-
+btn.addEventListener('click', changeCat)
 
 async function changeCat(){
     try{
@@ -43,13 +43,16 @@ async function changeCat(){
 }
 changeCat()
 
-btn.addEventListener('click', changeCat)
-
 
 async function loadFavorites(){
 
     try{
-    const res = await fetch(API_FAV)
+    const res = await fetch(API_FAV, {
+        method: 'GET',
+        headers: {
+            'X-API-KEY': API_KEY
+        }
+    })
    
     if (res.status == 200){   
         const data = await res.json()
@@ -86,12 +89,16 @@ async function agregarFavorito(id){
     try{
         const res = await fetch(API_FAV,{
         method: 'POST', 
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+                  'X-API-KEY': API_KEY
+        },
+
         body: JSON.stringify({image_id: id})  //esto es necesario porq no sabemos si el backend esta hecho en javascript por lo que lo enviamos en string
         })
         if (res.status == 200){
-            exito.innerHTML = "Imagen de Gatito Linda Guardada Exitosamente " + res.status
             loadFavorites()
+            exito.innerHTML = "Imagen de Gatito Linda Guardada Exitosamente " + res.status
+           
         }else{
             exito.innerHTML = "Error al guardar " + res.status
         }
@@ -106,7 +113,9 @@ async function deleteMichis(id){
     try{
         const res = await fetch(API_DEL(id),{
         method: 'DELETE', 
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+                  'X-API-KEY': API_KEY
+                },
         body: JSON.stringify({image_id: id})
         })
         if (res.status == 200){
@@ -118,4 +127,8 @@ async function deleteMichis(id){
     }catch{
 
     }
+}
+
+async function uploadPic(){
+
 }
