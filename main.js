@@ -11,12 +11,20 @@ const btn2 = document.getElementById('btn2')
 const btn3 = document.getElementById('btn3')
 
 
+//usando Axios para hacer las solicitudes al servidor
+const miApi = axios.create({
+    baseURL: 'https://miApi.thecatmiApi.com/v1'
+})
+
+miApi.defaults.headers.common['X-API-KEY'] = 'live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
+
+
 const API_KEY = 'live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
-const API = `https://api.thecatapi.com/v1/images/search?limit=3` 
-const API_FAV = `https://api.thecatapi.com/v1/favourites?` //Aqui ya no llamo la ${API_KEY} por que la pondre en el header
-const API_DEL = (id) => `https://api.thecatapi.com/v1/favourites/${id}?&api_key=${API_KEY}`//aqui ya no es necesario pasar el API_KEY por que lo envío en el header
-function API_D(id){`https://api.thecatapi.com/v1/favourites/${id}&api_key=${API_KEY}`} //igual a lo de arriba
-const API_UP = `https://api.thecatapi.com/v1/images/upload` 
+const API = `https://miApi.thecatmiApi.com/v1/images/search?limit=3` 
+const API_FAV = `https://miApi.thecatmiApi.com/v1/favourites?` //Aqui ya no llamo la ${API_KEY} por que la pondre en el header
+const API_DEL = (id) => `https://miApi.thecatmiApi.com/v1/favourites/${id}?&miApi_key=${API_KEY}`//aqui ya no es necesario pasar el API_KEY por que lo envío en el header
+function API_D(id){`https://miApi.thecatmiApi.com/v1/favourites/${id}&miApi_key=${API_KEY}`} //igual a lo de arriba
+const API_UP = `https://miApi.thecatmiApi.com/v1/images/upload` 
 
 btn.addEventListener('click', changeCat)
 
@@ -87,25 +95,31 @@ loadFavorites()
 
 //SOLICITUD DE TIPO POST
 async function agregarFavorito(id){
-    try{
-        const res = await fetch(API_FAV,{
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json',
-                  'X-API-KEY': API_KEY
-        },
+   
+        //Aqui hacemos la solicitud usando fetch
 
-        body: JSON.stringify({image_id: id})  //esto es necesario porq no sabemos si el backend esta hecho en javascript por lo que lo enviamos en string
-        })
-        if (res.status == 200){
+        // const res = await fetch(API_FAV,{
+        // method: 'POST', 
+        // headers: {'Content-Type': 'application/json',
+        //           'X-API-KEY': API_KEY
+        // },
+
+        // body: JSON.stringify({image_id: id})  //esto es necesario porq no sabemos si el backend esta hecho en javascript por lo que lo enviamos en string
+        // })
+
+     //   Aqui hacemos la solicitud con AXIOS
+
+        const res = await miApi.post('/favourites',{image_id: id}) //no es necesario el stringify ya que el axios lo hace automaticamente
+
+
+        if (status == 200){ //aqui ya no es necesario llamar res.status ya que el axios nos guarda en status directamente el status de la respuesta
             loadFavorites()
             exito.innerHTML = "Imagen de Gatito Linda Guardada Exitosamente " + res.status
            
         }else{
             exito.innerHTML = "Error al guardar " + res.status
         }
-    }catch (e){
-        console.log(e);
-    }    
+      
 }
 
 //SOLICITUD DE TIPO DELETE
@@ -134,24 +148,24 @@ async function uploadPic(){
 const form = document.getElementById('uploadingForm')
 const formData = new FormData(form)
 
-console.log(formData.get('file'));
+// console.log(formData.get('file'));
+   const res = await fetch(API_UP,{
+        method: "POST",
+        headers: {
+            "x-miApi-key": API_KEY,
+        },
+        body: formData,
+        })
 
-const res = await fetch(API_UP,{
-    method: 'POST',
-    headers: {
-       // 'Content-Type': 'multipart/form-data', //Esta api no definimos esto para que ponga por defecto otros parametros que necesita
-        'X-API-KEY': API_KEY
-            },
-            body: FormData
-                            })
-    const data = await res.json()
-    if (res.status == 200){
-        exito.innerHTML = 'Gatito subido exitosamente'
-        console.log(data.url);
-        agregarFavorito(data.id) //agregamos el gato a favoritos para verlo en la página principal
-    }else{
-        error.innerHTML = 'Error al Cargar el Michi' + res.status + data.message
-    }
+        const data = await res.json()
+
+        if (res.status == 201){
+            exito.innerHTML = 'Gatito subido exitosamente'
+            console.log(data.url);
+            agregarFavorito(data.id) //agregamos el gato a favoritos para verlo en la página principal
+        }else{
+            error.innerHTML = 'Error al Cargar el Michi' + res.status + data.message
+        }
 }
 
 const btnsubmit = document.getElementById('btnsubmit')
