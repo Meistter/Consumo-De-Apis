@@ -11,20 +11,14 @@ const btn2 = document.getElementById('btn2')
 const btn3 = document.getElementById('btn3')
 
 
-//usando Axios para hacer las solicitudes al servidor
-const miApi = axios.create({
-    baseURL: 'https://miApi.thecatmiApi.com/v1'
-})
-
-miApi.defaults.headers.common['X-API-KEY'] = 'live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
 
 
 const API_KEY = 'live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
-const API = `https://miApi.thecatmiApi.com/v1/images/search?limit=3` 
-const API_FAV = `https://miApi.thecatmiApi.com/v1/favourites?` //Aqui ya no llamo la ${API_KEY} por que la pondre en el header
-const API_DEL = (id) => `https://miApi.thecatmiApi.com/v1/favourites/${id}?&miApi_key=${API_KEY}`//aqui ya no es necesario pasar el API_KEY por que lo envío en el header
-function API_D(id){`https://miApi.thecatmiApi.com/v1/favourites/${id}&miApi_key=${API_KEY}`} //igual a lo de arriba
-const API_UP = `https://miApi.thecatmiApi.com/v1/images/upload` 
+const API = `https://api.thecatapi.com/v1/images/search?limit=3` 
+const API_FAV = `https://api.thecatapi.com/v1/favourites?` //Aqui ya no llamo la ${API_KEY} por que la pondre en el header
+const API_DEL = (id) => `https://api.thecatapi.com/v1/favourites/${id}?&api_key=${API_KEY}`//aqui ya no es necesario pasar el API_KEY por que lo envío en el header
+function API_D(id){`https://api.thecatapi.com/v1/favourites/${id}&api_key=${API_KEY}`} //igual a lo de arriba
+const API_UP = `https://api.thecatapi.com/v1/images/upload` 
 
 btn.addEventListener('click', changeCat)
 
@@ -92,6 +86,12 @@ async function loadFavorites(){
 }
 loadFavorites()
 
+//usando Axios para hacer las solicitudes al servidor
+const api = axios.create({
+    baseURL: 'https://api.thecatapi.com/v1'
+})
+
+api.defaults.headers.common['X-API-KEY'] = 'live_NKUNKal1REFZQFPdaqX7EmVQXp63CsG668PZNgfWPVojynVwNaZk1UOFk5SqJd3L'
 
 //SOLICITUD DE TIPO POST
 async function agregarFavorito(id){
@@ -109,15 +109,15 @@ async function agregarFavorito(id){
 
      //   Aqui hacemos la solicitud con AXIOS
 
-        const res = await miApi.post('/favourites',{image_id: id}) //no es necesario el stringify ya que el axios lo hace automaticamente
+        const { data, status } = await api.post('/favourites',{image_id: id}) //no es necesario el stringify ya que el axios lo hace automaticamente
 
 
-        if (status == 200){ //aqui ya no es necesario llamar res.status ya que el axios nos guarda en status directamente el status de la respuesta
+        if (status == 200){ //aqui ya no es necesario llamar res.status ya que el ax guarda en status directamente el status de la rios nosespuesta
             loadFavorites()
-            exito.innerHTML = "Imagen de Gatito Linda Guardada Exitosamente " + res.status
+            exito.innerHTML = "Imagen de Gatito Linda Guardada Exitosamente " + status
            
         }else{
-            exito.innerHTML = "Error al guardar " + res.status
+            exito.innerHTML = "Error al guardar " + status
         }
       
 }
@@ -152,7 +152,7 @@ const formData = new FormData(form)
    const res = await fetch(API_UP,{
         method: "POST",
         headers: {
-            "x-miApi-key": API_KEY,
+            "x-api-key": API_KEY,
         },
         body: formData,
         })
