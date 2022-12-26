@@ -4,57 +4,58 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>.gatitos{
-        align-items: center;
-        display: flex;            
-        }
-        .favMichis{
-        align-items: center;
-        display: flex;            
-        }
-        </style>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
     <title>Api de Gatos</title>
 </head>
 <body>
 
         <span id="error"></span>
         <span id="exito"></span>
+<div>
+        <div class="gatosAleatorios">
+            <h1>Gatitos Aleatorios</h1>
+            <section class="gatitos" id="randomCats">
 
-        <h1>Gatos Aleatorios</h1>
-    <section class="gatitos" id="randomCats">
-
-        <article>
-            <img id="img1" height="200px" alt="Foto de Gatos">
-            <button id="btn1">Agregar a Favorito</button>
-        </article>
-        <article>
-            <img id="img2"  height="200px"  alt="Foto de Gatos">
-            <button id="btn2">Agregar a Favorito</button>
-        </article>
-        <article>
-            <img id="img3" height="200px"  alt="Foto de Gatos">
-            <button id="btn3">Agregar a Favorito</button>
-        </article>
+                <article>
+                    <img id="img1" alt="Foto de Gatos">
+                    <button id="btn1">Agregar a Favorito</button>
+                </article>
+                <article>
+                    <img id="img2"   alt="Foto de Gatos">
+                    <button id="btn2">Agregar a Favorito</button>
+                </article>
+                <article>
+                    <img id="img3"  alt="Foto de Gatos">
+                    <button id="btn3">Agregar a Favorito</button>
+                </article>
 
 
-        <button id="boton">Cambiar</button>
-    </section>
+                <button class="boton" id="boton">Cambiar</button>
+            </section>
+        </div>
+        <div class="gatosFavoritos">
+            <h1>Favoritos</h1>
 
-    <h1>Favoritos</h1>
+            <section class="favMichis" id="favoritesMichis">
+            </section>
+                
+        </div>
+        <div>
+            <section id="uploadCat">
+                <h1>Sube la foto de tu gatito</h1>
 
-    <section class="favMichis" id="favoritesMichis">
-    </section>
-        
-    <section id="uploadCat">
-        <h2>Subir Foto de Gato</h2>
-
-        <form id="uploadingForm" action="">
-            <input id="file" type="file" name="file">
-            <button id="btnsubmit" type="button">Subir Foto</button>
-        </form>
-    </section>
-
+                <form id="uploadingForm" action="">
+                    <input id="file" type="file" name="file">
+                    <button id="btnsubmit" type="button">Subir Foto</button>
+                </form>
+            </section>
+        </div>
+</div>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="./main.js"></script>
+
 </body>
 </html>

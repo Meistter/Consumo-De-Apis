@@ -68,8 +68,7 @@ async function loadFavorites(){
             const btnText = document.createTextNode('Quitar de Favoritos')
 
             btnx.appendChild(btnText)
-            imgx.src = gato.image.url
-            imgx.height = 150
+            imgx.src = gato.image.url            
             article.append(imgx, btnx)
             section.appendChild(article)
 
